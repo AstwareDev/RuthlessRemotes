@@ -1,7 +1,7 @@
 
 # RuthlessRemotes  
 
-RuthlessRemotes is a Lua-based system that allows you to send, receive, and debug encoded data using animations in **Roblox**.  
+RuthlessRemotes is a Lua-based system that allows you to send and receive encoded data using animations in **Roblox**.  
 
 ## 📜 Features  
 - **FireData(Data)** → Sends encoded data.  
