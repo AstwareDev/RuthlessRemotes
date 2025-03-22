@@ -75,6 +75,7 @@ end
 
 ## 📌 Notes  
 - Data is encoded into **animations** and decoded upon reception.  
-- It only works on **players who are using this library**.  
+- It only works on **Roblox Executors**.
+- Both exploiters have to use the library to transfer data between them. 
 - Make sure to call `Start()` to begin receiving data.  
 - Debug mode will show notifications for sent/received data.
