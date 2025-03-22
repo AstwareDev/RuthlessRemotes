@@ -7,7 +7,7 @@ RuthlessRemotes is a Lua-based system that allows you to send, receive, and debu
 - **FireData(Data)** → Sends encoded data.  
 - **GetData()** → Retrieves stored data.
 - **Start()** → Starts the system to capture incoming data.  
-- **Custom Event** → Triggered when data is received from another player.  
+- **OnDataReceivedCallback = function()** → Triggered when data is received from another player.  
 
 ## 📥 Installation  
 Load RuthlessRemotes using:  
@@ -49,7 +49,7 @@ This listens for animations from other players and stores the decoded data.
 ### 📢 Custom Event for Data Reception  
 You can assign a custom function to run when data is received by setting `OnDataReceived` in `RuthlessInfo`. This function will be triggered whenever new data is decoded:  
 ```lua
-RuthlessRemotes.OnDataReceived = function(player, data)
+RuthlessRemotes.OnDataReceivedCallback = function(player, data)
     print("Data received from " .. player.Name)
     print(data)
 end
@@ -61,7 +61,7 @@ end
 ```lua
 local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
 
-RuthlessRemotes.OnDataReceived = function(player, data)
+RuthlessRemotes.OnDataReceivedCallback = function(player, data)
     print("Data received from " .. player.Name .. ": " .. data.Action)
 end
 
