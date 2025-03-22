@@ -1,3 +1,17 @@
+local RuthlessRemotes = {}
+
+RuthlessRemotes.OnDataReceivedCallback = nil
+
+local Players = game:GetService("Players")
+
+if not getgenv().RuthlessInfo then
+    getgenv().RuthlessInfo = {
+        CurrentData = {},
+    }
+end
+
+-- Encoding and Decoding
+
 local indexTable = {
 	["A"] = "1023", ["B"] = "4067", ["C"] = "8392", ["D"] = "9173", ["E"] = "2840",
 	["F"] = "6701", ["G"] = "9324", ["H"] = "8076", ["I"] = "3642", ["J"] = "9012",
@@ -62,17 +76,23 @@ local function decodeTable(input)
 	return decoded
 end
 
-local Players = game:GetService("Players")
+-- Creating Library commands
 
-if not getgenv().RuthlessInfo then
-    getgenv().RuthlessInfo = {
-        CurrentData = {},
-    }
+local function CheckForData(player, character)
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.AnimationPlayed:Connect(function(track)
+            local animId = track.Animation.AnimationId:gsub("rbxassetid://", "")
+            if not animId:match("http") then
+                local decodedData = decodeTable(animId)
+                getgenv().RuthlessInfo.CurrentData[player.Name] = decodedData
+                if RuthlessRemotes.OnDataReceivedCallback then
+                    RuthlessRemotes.OnDataReceivedCallback(player, decodedData)
+                end
+            end
+        end)
+    end
 end
-
-local RuthlessRemotes = {}
-
-RuthlessRemotes.OnDataReceivedCallback = nil
 
 function RuthlessRemotes.FireData(Data)
     local function SendData()
@@ -97,7 +117,9 @@ function RuthlessRemotes.Start()
         if player.Character then CheckForData(player, player.Character) end
     end
     Players.PlayerAdded:Connect(onPlayerAdded)
-    for _, player in Players:GetPlayers() do onPlayerAdded(player) end
+    for _, player in Players:GetPlayers() do 
+        onPlayerAdded(player) 
+    end
 end
 
 return RuthlessRemotes
