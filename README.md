@@ -24,7 +24,6 @@ You can send data using `FireData`. The data must be a table.
 ```lua
 RuthlessRemotes.FireData({Message = "Hello", Number = 123})
 ```
-If debug mode is enabled, you'll see a notification confirming the data was sent.  
 
 ---
 
