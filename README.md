@@ -1,3 +1,4 @@
+
 # RuthlessRemotes  
 
 RuthlessRemotes is a Lua-based system that allows you to send, receive, and debug encoded data using animations in **Roblox**.  
@@ -7,6 +8,7 @@ RuthlessRemotes is a Lua-based system that allows you to send, receive, and debu
 - **GetData()** → Retrieves stored data.  
 - **Debug(Enabled)** → Toggles debug mode.  
 - **Start()** → Starts the system to capture incoming data.  
+- **Custom Event** → Triggered when data is received from another player.  
 
 ## 📥 Installation  
 Load RuthlessRemotes using:  
@@ -54,6 +56,17 @@ This listens for animations from other players and stores the decoded data.
 
 ---
 
+### 📢 Custom Event for Data Reception  
+You can assign a custom function to run when data is received by setting `OnDataReceived` in `RuthlessInfo`. This function will be triggered whenever new data is decoded:  
+```lua
+RuthlessRemotes.OnDataReceived = function(player, data)
+    print("Data received from " .. player.Name)
+    print(data)
+end
+```
+
+---
+
 ## 📝 Example Script  
 ```lua
 local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
@@ -69,6 +82,10 @@ local receivedData = RuthlessRemotes.GetData() -- Get stored data
 for player, data in pairs(receivedData) do
     print("Data from " .. player .. ": " .. data.Action .. " at speed " .. data.Speed)
 end
+
+RuthlessRemotes.OnDataReceived = function(player, data)
+    print("Data received from " .. player.Name .. ": " .. data.Action)
+end
 ```
 
 ---
@@ -76,6 +93,7 @@ end
 ## 📌 Notes  
 - Data is encoded into **animations** and decoded upon reception.  
 - It only works on **Roblox Executors**.
-- Both exploiters have to use the library to transfer data between them. 
+- Both exploiters must use the library to transfer data between them. 
 - Make sure to call `Start()` to begin receiving data.  
-- Debug mode will show notifications for sent/received data.
+- Debug mode will show notifications for sent/received data.  
+- The system will automatically retry data sending if it fails, up to a set number of attempts.  
