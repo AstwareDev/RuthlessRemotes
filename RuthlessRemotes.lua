@@ -83,6 +83,7 @@ function RuthlessRemotes.FireData(Data)
     local success, result = pcall(SendData)
     if success then
         result = "Data was sent successfully\nData: " .. encodeTable(Data)
+        print(result)
     end
 end
 
@@ -96,7 +97,7 @@ function RuthlessRemotes.Start()
         if player.Character then CheckForData(player, player.Character) end
     end
     Players.PlayerAdded:Connect(onPlayerAdded)
-    for _, player in ipairs(Players:GetPlayers()) do onPlayerAdded(player) end
+    for _, player in Players:GetPlayers() do onPlayerAdded(player) end
 end
 
 return RuthlessRemotes
