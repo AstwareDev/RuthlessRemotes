@@ -7,7 +7,7 @@ RuthlessRemotes is a Lua-based system that allows you to send, receive, and debu
 - **FireData(Data)** → Sends encoded data.  
 - **GetData()** → Retrieves stored data.
 - **Start()** → Starts the system to capture incoming data.  
-- **OnDataReceivedCallback = function()** → Triggered when data is received from another player.  
+- **OnDataReceivedCallback = function(player, dataTable)** → Triggered when data is received from another player.  
 
 ## 📥 Installation  
 Load RuthlessRemotes using:  
