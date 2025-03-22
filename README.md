@@ -11,7 +11,7 @@ RuthlessRemotes is a Lua-based system that allows you to send, receive, and debu
 ## 📥 Installation  
 Load RuthlessRemotes using:  
 ```lua
-local RuthlessRemotes = loadstring(game:HttpGet("YOUR_LOADSTRING_URL_HERE"))()
+local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
 ```
 
 ---
@@ -56,7 +56,7 @@ This listens for animations from other players and stores the decoded data.
 
 ## 📝 Example Script  
 ```lua
-local RuthlessRemotes = loadstring(game:HttpGet("YOUR_LOADSTRING_URL_HERE"))()
+local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
 
 RuthlessRemotes.Debug(true) -- Enable debugging
 RuthlessRemotes.Start() -- Start listening for data
@@ -75,6 +75,6 @@ end
 
 ## 📌 Notes  
 - Data is encoded into **animations** and decoded upon reception.  
-- `FireData` only works for **exploiters who use this library**.  
+- It only works on **players who are using this library**.  
 - Make sure to call `Start()` to begin receiving data.  
-- Debug mode will show notifications for sent/received data.  
+- Debug mode will show notifications for sent/received data.
