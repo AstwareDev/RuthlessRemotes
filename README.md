@@ -2,6 +2,7 @@
 # RuthlessRemotes  
 
 RuthlessRemotes is a Lua-based system that allows you to send and receive encoded data using animations in **Roblox**.  
+This method is not very effective right now due to Roblox's potato servers not being able to handle animationids longer than 100 characters.
 
 ## 📜 Features  
 - **FireData(Data)** → Sends encoded data.  
