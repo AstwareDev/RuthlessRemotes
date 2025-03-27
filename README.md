@@ -84,4 +84,4 @@ end
 - Both exploiters must use the library to transfer data between them. 
 - Make sure to call `Start()` to begin receiving data.
 - The system will automatically retry data sending if it fails, up to a set number of attempts.
-- Due to the limitations of animations and Roblox's potato servers, table sizes are restricted, and you can only send numbers and strings
+- Due to the limitations of animations and Roblox's potato servers, table sizes are restricted, and you can only send numbers and strings (the library is open-source so you can change the encryption for shorter animationids)
