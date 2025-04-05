@@ -21,7 +21,7 @@
 ## 📦 Installation
 
 ```lua
-local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
+local RuthlessRemotes = loadstring(request({Url = "https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua", Method = 'GET'}).Body)()
 ```
 
 ---
@@ -94,7 +94,7 @@ RuthlessRemotes.Debug(true)
 ## 🧪 Full Example
 
 ```lua
-local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
+local RuthlessRemotes = loadstring(request({Url = "https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua", Method = 'GET'}).Body)()
 
 RuthlessRemotes.Debug(true)
 
