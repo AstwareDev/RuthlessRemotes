@@ -1,8 +1,8 @@
 # 🌀 RuthlessRemotes
 
-**RuthlessRemotes** is a Roblox Lua library that allows exploiters to securely transmit encoded data between clients using **animation IDs**. No remotes, no server-side — just pure stealth.
+**RuthlessRemotes** is a stealthy Roblox LuaU library designed to enable exploiters to transmit encoded data between alts or other exploiters using animation IDs. It operates without relying on remotes or server-side communication, offering a pure and undetectable method of data transfer.
 
-![Logo](Thumbnail.png)
+![Thumbnail](Thumbnail.png)
 
 ---
 
