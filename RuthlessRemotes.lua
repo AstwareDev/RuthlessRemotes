@@ -1,7 +1,11 @@
 local RuthlessRemotes = {}
 
-RuthlessRemotes.DataReceivedSignal = Instance.new("BindableEvent")
-RuthlessRemotes.AttributeReceivedSignal = Instance.new("BindableEvent")
+RuthlessRemotes.DataReceivedSignal = function(player, data)
+    warn("You haven't configured DataReceviedSignal.")
+end
+RuthlessRemotes.AttributeReceivedSignal = function(player, att)
+    warn("You haven't configured AttributeReceivedSignal.")
+end
 
 local Players = game:GetService("Players")
 
@@ -110,17 +114,13 @@ local function CheckForData(player, character)
                 if DataType == "Table" then
                     local decodedData = decodeTable(animId)
                     getgenv().RuthlessInfo.CurrentData[player.Name] = decodedData
-		    print("Data 1")
                     if RuthlessRemotes.DataReceivedSignal then
-			print("Data 1/2")
-                        RuthlessRemotes.DataReceivedSignal:Fire(player, decodedData)
+                        RuthlessRemotes.DataReceivedSignal(player, decodedData)
                     end
                 elseif DataType == "Attribute" then
                     local decodedData = decodeAttribute(animId, player)
-		    print("Data 2")
                     if RuthlessRemotes.AttributeReceivedSignal then
-			print("Data 2/2")
-                        RuthlessRemotes.AttributeReceivedSignal:Fire(player, decodedData)
+                        RuthlessRemotes.AttributeReceivedSignal(player, decodedData)
                     end
                 end
             end
