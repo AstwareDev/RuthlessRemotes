@@ -130,10 +130,12 @@ function RuthlessRemotes.Debug(bool)
 end
 
 function RuthlessRemotes.FireData(Data)
+    if getgenv().RuthlessInfo.Debug then print("Fired Data "..Data)
     local function SendData()
         local anim = Instance.new("Animation")
         anim.AnimationId = "rbxassetid://" .. encodeTable(Data)
         game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid"):LoadAnimation(anim):Play()
+        if getgenv().RuthlessInfo.Debug then print("Played Animation "..encodedTable(Data))
     end
     local success, result = pcall(SendData)
     if success and getgenv().RuthlessInfo.Debug then
@@ -150,6 +152,7 @@ function RuthlessRemotes.GetData()
 end
 
 function RuthlessRemotes.SetAttribute(AttributeName, AttributeData)
+    if getgenv().RuthlessInfo.Debug then print("Fired Attribute "..AttributeName .. AttributeData)
     local function SendData()
         local anim = Instance.new("Animation")
         anim.AnimationId = "rbxassetid://" .. encodeAttribute(AttributeName, AttributeData)
@@ -166,6 +169,7 @@ function RuthlessRemotes.SetAttribute(AttributeName, AttributeData)
 end
 
 function RuthlessRemotes.Start()
+    if getgenv().RuthlessInfo.Debug then print("Started Script")
     local function onPlayerAdded(player)
         player.CharacterAdded:Connect(function(character) CheckForData(player, character) end)
         if player.Character then CheckForData(player, player.Character) end
