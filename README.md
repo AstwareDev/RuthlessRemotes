@@ -1,87 +1,126 @@
+# ⚔️ RuthlessRemotes
 
-# RuthlessRemotes  
+**RuthlessRemotes** is a Roblox Lua library that allows exploiters to securely transmit encoded data between clients using **animation IDs**. No remotes, no server-side — just pure stealth.
 
-RuthlessRemotes is a Lua-based system that allows you to send and receive encoded data using animations in **Roblox**.
+---
 
-## 📜 Features  
-- **FireData(Data)** → Sends encoded data.  
-- **GetData()** → Retrieves stored data.
-- **Start()** → Starts the system to capture incoming data.  
-- **OnDataReceivedCallback = function(player, dataTable)** → Triggered when data is received from another player.  
+## ⚙️ Features
 
-## 📥 Installation  
-Load RuthlessRemotes using:  
+- `FireData(table)` — Encodes and sends a table of data via animation.
+- `SetAttribute(name, value)` — Sends a key-value pair as a standalone attribute.
+- `GetData()` — Returns a table of all received data, indexed by player name.
+- `Start()` — Begins listening for incoming animation-based data.
+- `DataReceivedSignal(player, data)` — Callback for full table reception.
+- `AttributeReceivedSignal(player, attrTable)` — Callback for individual key/value attributes.
+- `Debug(true/false)` — Enables logging for internal send/receive actions.
+
+---
+
+## 📦 Installation
+
 ```lua
 local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
 ```
 
 ---
 
-## 🚀 Usage  
+## 🚀 Usage
 
-### 🔥 Sending Data  
-You can send data using `FireData`. The data must be a table.  
-```lua
-RuthlessRemotes.FireData({Message = "Hello", Number = 123})
-```
+### 🔹 Start Listening
 
----
-
-### 📡 Receiving Data  
-Call `GetData()` to retrieve stored data. It returns a table with player names as keys.  
-```lua
-local data = RuthlessRemotes.GetData()
-print(data["PlayerName"]) -- Prints the received data for "PlayerName"
-```
-
----
-
-### 🚦 Starting the System  
-To capture incoming data, **start** the system:  
 ```lua
 RuthlessRemotes.Start()
 ```
-This listens for animations from other players and stores the decoded data.
+
+Call this once to begin scanning for animations from other players.
 
 ---
 
-### 📢 Custom Event for Data Reception  
-You can assign a custom function to run when data is received by setting `OnDataReceived` in `RuthlessInfo`. This function will be triggered whenever new data is decoded:  
+### 🔥 Send Data
+
 ```lua
-RuthlessRemotes.OnDataReceivedCallback = function(player, data)
-    print("Data received from " .. player.Name)
-    print(data)
+RuthlessRemotes.FireData({Action = "Jump", Speed = 30})
+```
+
+You can send any Lua table (keys and values are turned into strings internally).
+
+---
+
+### 📡 Receive Data
+
+To automatically handle incoming table data:
+
+```lua
+RuthlessRemotes.DataReceivedSignal = function(player, data)
+    print("Table from " .. player.Name)
+    print(data.Action, data.Speed)
+end
+```
+
+For single key-value pairs (attributes):
+
+```lua
+RuthlessRemotes.AttributeReceivedSignal = function(player, attr)
+    print("Attribute from " .. player.Name .. ": " .. attr.Name .. " = " .. attr.Data)
+    attr.Parent:SetAttribute(attr.Name, attr.Data)
 end
 ```
 
 ---
 
-## 📝 Example Script  
+### 📥 Get Stored Data
+
+You can fetch all previously received tables:
+
+```lua
+local received = RuthlessRemotes.GetData()
+print(received["PlayerName"]) -- Outputs the latest table received from this player
+```
+
+---
+
+### 🧠 Debug Mode (Optional)
+
+Enable logs to get feedback in the console:
+
+```lua
+RuthlessRemotes.Debug(true)
+```
+
+---
+
+## 🧪 Full Example
+
 ```lua
 local RuthlessRemotes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterTSBG/custom-libraries/refs/heads/main/RuthlessRemotes.lua"))()
 
-RuthlessRemotes.OnDataReceivedCallback = function(player, data)
-    print("Data received from " .. player.Name .. ": " .. data.Action)
+RuthlessRemotes.Debug(true)
+
+RuthlessRemotes.DataReceivedSignal = function(player, data)
+    print("Data from " .. player.Name .. ": ", data.Action)
 end
 
-RuthlessRemotes.Start() -- Start listening for data
+RuthlessRemotes.AttributeReceivedSignal = function(player, attr)
+    print("Attribute from " .. player.Name .. ": " .. attr.Name .. " = " .. attr.Data)
+    attr.Parent:SetAttribute(attr.Name, attr.Data)
+end
 
-task.wait(2) 
-RuthlessRemotes.FireData({Action = "Jump", Speed = 25}) -- Send data
+RuthlessRemotes.Start()
 
 task.wait(2)
-local receivedData = RuthlessRemotes.GetData() -- Get stored data
-for player, data in pairs(receivedData) do
-    print("Data from " .. player .. ": " .. data.Action .. " at speed " .. data.Speed)
-end
+RuthlessRemotes.FireData({Action = "Dash", Speed = 50})
+
+task.wait(2)
+RuthlessRemotes.SetAttribute("Mode", "Stealth")
 ```
 
 ---
 
-## 📌 Notes  
-- Data is encoded into **animations** and decoded upon reception.  
-- It only works on **Roblox Executors**.
-- Both exploiters must use the library to transfer data between them. 
-- Make sure to call `Start()` to begin receiving data.
-- The system will automatically retry data sending if it fails, up to a set number of attempts.
-- Due to the limitations of animations and Roblox's potato servers, table sizes are restricted, and you can only send numbers and strings (the library is open-source so you can change the encryption for shorter animationids)
+## ⚠️ Limitations
+
+- ❌ **Cannot send Roblox instances** — Only strings, numbers, and tables (with those types) are supported.
+- 🧠 **All data is converted to string** before being encoded and sent.
+- 💥 **Large payloads can crash the client** — Encoding long strings or large tables results in very long animation IDs, which may freeze or crash the Roblox client.
+- 🔁 **No retry/reliability mechanism** — If a send fails and debug is off, no errors will show. Consider enabling `Debug(true)` for development.
+- 🔒 **Only works in exploit environment** — Requires a Roblox executor. Cannot be used in regular Roblox Studio or published games.
+- 📡 **Both users must be using the library** — Data transmission only works if both sender and receiver run RuthlessRemotes.
