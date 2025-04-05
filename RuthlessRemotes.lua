@@ -1,12 +1,14 @@
 local RuthlessRemotes = {}
 
-RuthlessRemotes.OnDataReceivedCallback = nil
+RuthlessRemotes.DataReceivedSignal = nil
+RuthlessRemotes.AttributeReceivedSignal = nil
 
 local Players = game:GetService("Players")
 
 if not getgenv().RuthlessInfo then
     getgenv().RuthlessInfo = {
         CurrentData = {},
+        Debug = false,
     }
 end
 
@@ -56,6 +58,26 @@ local function decodeString(input)
 	return table.concat(decoded)
 end
 
+local function encodeAttribute(AttributeName, AttributeData)
+    local encoded = {}
+    local encodedName = "333" .. encodeString(tostring(AttributeName)) .. "333"
+    local encodedData = "666" .. encodeString(tostring(AttributeData)) .. "666"
+    table.insert(encoded, encodedName .. encodedData)
+    return table.concat(encoded, "999")
+end
+
+local function decodeAttribute(input, plr)
+    local decoded = {}
+    for encodedName, encodedData in input:gmatch("333(.-)333666(.-)666") do
+        local AttributeName = decodeString(encodedName)
+        local AttributeData = decodeString(encodedData)
+        decoded.Name = AttributeName
+        decoded.Data = AttributeData
+        decoded.Parent = plr
+    end
+    return decoded
+end
+
 local function encodeTable(tbl)
 	local encoded = {}
 	for index, value in pairs(tbl) do
@@ -76,22 +98,35 @@ local function decodeTable(input)
 	return decoded
 end
 
--- Creating Library commands
-
 local function CheckForData(player, character)
+    local DataType = ""
+    local prefixMap = {["333"] = "Attribute", ["444"] = "Table"}
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if humanoid then
         humanoid.AnimationPlayed:Connect(function(track)
             local animId = track.Animation.AnimationId:gsub("rbxassetid://", "")
             if not animId:match("https://www.roblox") then
-                local decodedData = decodeTable(animId)
-                getgenv().RuthlessInfo.CurrentData[player.Name] = decodedData
-                if RuthlessRemotes.OnDataReceivedCallback then
-                    RuthlessRemotes.OnDataReceivedCallback(player, decodedData)
+                DataType = prefixMap[animId:sub(1,3)]
+                if DataType == "Table" then
+                    local decodedData = decodeTable(animId)
+                    getgenv().RuthlessInfo.CurrentData[player.Name] = decodedData
+                    if RuthlessRemotes.DataReceivedSignal then
+                        RuthlessRemotes.DataReceivedSignal(player, decodedData)
+                    end
+                elseif DataType == "Attribute" then
+                    local decodedData = decodeAttribute(animId, player)
+                    if RuthlessRemotes.AttributeReceivedSignal then
+                        RuthlessRemotes.AttributeReceivedSignal(player, decodedData)
+                    end
                 end
             end
         end)
     end
+end
+
+-- Creating Library commands
+function RuthlessRemotes.Debug(bool)
+    getgenv().RuthlessInfo.Debug = bool
 end
 
 function RuthlessRemotes.FireData(Data)
@@ -101,14 +136,33 @@ function RuthlessRemotes.FireData(Data)
         game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid"):LoadAnimation(anim):Play()
     end
     local success, result = pcall(SendData)
-    if success then
+    if success and getgenv().RuthlessInfo.Debug then
         result = "Data was sent successfully\nData: " .. encodeTable(Data)
         print(result)
+    elseif not success and getgenv().RuthlessInfo.Debug then
+        newresult = "RuthlessRemotes - Error while transfering data: " .. result
+        print(newresult)
     end
 end
 
 function RuthlessRemotes.GetData()
     return getgenv().RuthlessInfo.CurrentData
+end
+
+function RuthlessRemotes.SetAttribute(AttributeName, AttributeData)
+    local function SendData()
+        local anim = Instance.new("Animation")
+        anim.AnimationId = "rbxassetid://" .. encodeAttribute(AttributeName, AttributeData)
+        game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid"):LoadAnimation(anim):Play()
+    end
+    local success, result = pcall(SendData)
+    if success and getgenv().RuthlessInfo.Debug then
+        result = "Data was sent successfully\nData: " .. encodeAttribute(AttributeName, AttributeData)
+        print(result)
+    elseif not success and getgenv().RuthlessInfo.Debug then
+        newresult = "RuthlessRemotes - Error while transfering data: " .. result
+        print(newresult)
+    end
 end
 
 function RuthlessRemotes.Start()
